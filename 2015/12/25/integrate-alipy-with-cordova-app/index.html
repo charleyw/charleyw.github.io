@@ -1,0 +1,637 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="申请帐号首先你需要从这个网站支付宝商家页面申请帐号，然后申请无线支付。
+中间需要经历实名认证，对公帐号认证等等认证，全部成功之后会收到短信通知告诉你预约成功。
+上传RSA公钥
+按照这个网页的说明生成RSA公钥注意：在pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt这一步会将生成的PKCS8格式的私钥打印到屏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cordova集成支付宝支付">
+<meta property="og:url" content="http://imchao.wang/2015/12/25/integrate-alipy-with-cordova-app/index.html">
+<meta property="og:site_name" content="王超的技术博客">
+<meta property="og:description" content="申请帐号首先你需要从这个网站支付宝商家页面申请帐号，然后申请无线支付。
+中间需要经历实名认证，对公帐号认证等等认证，全部成功之后会收到短信通知告诉你预约成功。
+上传RSA公钥
+按照这个网页的说明生成RSA公钥注意：在pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt这一步会将生成的PKCS8格式的私钥打印到屏">
+<meta property="og:updated_time" content="2016-08-29T08:56:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cordova集成支付宝支付">
+<meta name="twitter:description" content="申请帐号首先你需要从这个网站支付宝商家页面申请帐号，然后申请无线支付。
+中间需要经历实名认证，对公帐号认证等等认证，全部成功之后会收到短信通知告诉你预约成功。
+上传RSA公钥
+按照这个网页的说明生成RSA公钥注意：在pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt这一步会将生成的PKCS8格式的私钥打印到屏">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://imchao.wang/2015/12/25/integrate-alipy-with-cordova-app/"/>
+
+  <title> Cordova集成支付宝支付 | 王超的技术博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-46801609-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d589ef06c2d30f9bee9db8326816e3d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">王超的技术博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">享受技术和编程带来的快乐</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Cordova集成支付宝支付
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-25T10:17:05+08:00" content="2015-12-25">
+              2015-12-25
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="申请帐号"><a href="#申请帐号" class="headerlink" title="申请帐号"></a>申请帐号</h3><p>首先你需要从这个网站<a href="https://b.alipay.com/newIndex.htm" target="_blank" rel="external">支付宝商家页面</a>申请帐号，然后申请<a href="https://b.alipay.com/order/productDetail.htm?productId=2015110218010538" target="_blank" rel="external">无线支付</a>。</p>
+<p>中间需要经历实名认证，对公帐号认证等等认证，全部成功之后会收到短信通知告诉你预约成功。</p>
+<h3 id="上传RSA公钥"><a href="#上传RSA公钥" class="headerlink" title="上传RSA公钥"></a>上传RSA公钥</h3><ul>
+<li>按照这个<a href="http://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.WSkmo8&amp;treeId=58&amp;articleId=103242&amp;docType=1" target="_blank" rel="external">网页</a>的说明生成RSA公钥<br><strong>注意</strong>：在<code>pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt</code>这一步会将生成的PKCS8格式的私钥打印到屏幕，需要手动保存。之后需要使用。</li>
+<li>然后把生成好的RSA公钥上传到这个支付宝上，参照这个<a href="http://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.KOQ7dv&amp;treeId=58&amp;articleId=103578&amp;docType=1" target="_blank" rel="external">网页</a></li>
+</ul>
+<p><strong>注意上传的时候记住删掉公钥文件前后的—–BEGIN PUBLIC KEY—–和—–END PUBLIC KEY—–，以及空格和换行，否则会告诉你公钥非法</strong></p>
+<h3 id="准备好集成资料"><a href="#准备好集成资料" class="headerlink" title="准备好集成资料"></a>准备好集成资料</h3><ul>
+<li>支付宝帐号</li>
+<li>合作者身份ID(PID): <a href="http://doc.open.alipay.com/doc2/detail?treeId=58&amp;articleId=103544&amp;docType=1" target="_blank" rel="external">查看方法</a></li>
+<li>刚才生成的PKCS8格式的私钥：rsa_private_key.pem</li>
+</ul>
+<h3 id="集成Cordova支付宝插件-cordova-plugin-alipay"><a href="#集成Cordova支付宝插件-cordova-plugin-alipay" class="headerlink" title="集成Cordova支付宝插件 cordova-plugin-alipay"></a>集成Cordova支付宝插件 <a href="https://github.com/charleyw/cordova-plugin-alipay.git" target="_blank" rel="external">cordova-plugin-alipay</a></h3><p>以下以Mac系统为例</p>
+<ol>
+<li><p>使用git命令将插件下载到本地，并标记为$CORDOVA_PLUGIN_DIR</p>
+<pre><code>git clone https://github.com/charleyw/cordova-plugin-alipay.git &amp;&amp; cd cordova-plugin-alipay &amp;&amp; export CORDOVA_PLUGIN_DIR=$(pwd)
+</code></pre></li>
+<li><p>修改$CORDOVA_PLUGIN_DIR/plugin.xml，将</p>
+<pre><code>&lt;preference name=&quot;private_key&quot; value=&quot;$PRIVATE_KEY&quot; /&gt;
+</code></pre><p>改成</p>
+<pre><code>&lt;preference name=&quot;PRIVATE_KEY&quot; value=&quot;你生成的PKCS8格式的私钥&quot;/&gt;
+</code></pre><p> <strong>注意</strong>：注意和公钥一样，需要去掉—–BEGIN PUBLIC KEY—–和—–END PUBLIC KEY—–，以及空格和换行</p>
+</li>
+<li><p>安装</p>
+<pre><code>cordova plugin add $CORDOVA_PLUGIN_DIR --variable PARTNER_ID=[合作者身份ID(PID)] --variable SELLER_ACCOUNT=[你的商户支付宝帐号]
+</code></pre></li>
+</ol>
+<p>安装成功之后剩下的就是编程的问题了。</p>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">window.alipay.pay(&#123;</div><div class="line">	tradeNo: tradeNo,</div><div class="line">	subject: &quot;测试标题&quot;,</div><div class="line">	body: &quot;我是测试内容&quot;,</div><div class="line">	price: 0.02,</div><div class="line">	fromUrlScheme: &quot;demoScheme://afterPaymentSuccess&quot;,</div><div class="line">	notifyUrl: &quot;http://your.server.notify.url&quot;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>tradeNo 这个是支付宝需要的，应该是一个唯一的ID号</li>
+<li>subject 这个字段会显示在支付宝付款的页面</li>
+<li>body 订单详情，没找到会显示哪里</li>
+<li>price 价格，支持两位小数</li>
+<li>fromUrlScheme 支付完成跳转的URL Scheme（<a href="https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Inter-AppCommunication/Inter-AppCommunication.html" target="_blank" rel="external">iOS</a>，<a href="http://developer.android.com/training/basics/intents/filters.html" target="_blank" rel="external">Android</a>），可以使用这个<a href="https://github.com/EddyVerbruggen/Custom-URL-scheme" target="_blank" rel="external">Cordova插件</a>定义你的App的Scheme</li>
+</ul>
+<p>调用<code>pay</code>方法会打开支付宝支付页面进行支付（如果有安装支付宝钱包的话会打开支付宝钱包），支付完成之后会跳回到程序，会跳到<code>fromUrlScheme</code>定义的程序页面，<br>如上面的例子会返回你的程序的<code>/afterPaymentSuccess</code>路径所定义的页面，并且支付结果会附加到这个url后面。你可以在程序中调试来确定该怎么处理。</p>
+<p><strong>注意</strong>：因为插件的作者比较懒一直没有加回掉函数（所以需要使用URL Scheme来返回结果），所以使用这个插件的基本条件是：1. 使用URL Scheme， 2. 你的应用有路由或类似的东西来代表页面状态(即可以通过URL跳转到某个页面)，因为支付成功之后会跳转到这个页面。</p>
+<p>祝大家好运！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/16/android-ci-environment/" rel="next" title="构建Android持续集成环境">
+                <i class="fa fa-chevron-left"></i> 构建Android持续集成环境
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/25/use-react-implement-tabs-page/" rel="prev" title="用React实现点击切换的标签页">
+                用React实现点击切换的标签页 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="王超" />
+          <p class="site-author-name" itemprop="name">王超</p>
+          <p class="site-description motion-element" itemprop="description">享受技术和编程带来的快乐</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/charleyw" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#申请帐号"><span class="nav-number">1.</span> <span class="nav-text">申请帐号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传RSA公钥"><span class="nav-number">2.</span> <span class="nav-text">上传RSA公钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备好集成资料"><span class="nav-number">3.</span> <span class="nav-text">准备好集成资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集成Cordova支付宝插件-cordova-plugin-alipay"><span class="nav-number">4.</span> <span class="nav-text">集成Cordova支付宝插件 cordova-plugin-alipay</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">5.</span> <span class="nav-text">使用方法</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">王超</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

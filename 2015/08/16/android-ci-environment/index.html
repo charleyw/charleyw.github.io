@@ -1,0 +1,675 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="本文的主要内容是如何用脚本在服务器上创建一个基于gradle的Android构建环境。
+目标操作系统
+Ubuntu 14.04ps: 基本上Linux都适用，不过只在Ubuntu和CentOS上测试过。
+
+依赖的软件
+Java
+Android SDK
+
+安装Oracle JDK这里我安装的JDK8，我使用的安装方法是相对来说比较绿色的
+下载Oracle JDK8wget --no-cookies">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建Android持续集成环境">
+<meta property="og:url" content="http://imchao.wang/2015/08/16/android-ci-environment/index.html">
+<meta property="og:site_name" content="王超的技术博客">
+<meta property="og:description" content="本文的主要内容是如何用脚本在服务器上创建一个基于gradle的Android构建环境。
+目标操作系统
+Ubuntu 14.04ps: 基本上Linux都适用，不过只在Ubuntu和CentOS上测试过。
+
+依赖的软件
+Java
+Android SDK
+
+安装Oracle JDK这里我安装的JDK8，我使用的安装方法是相对来说比较绿色的
+下载Oracle JDK8wget --no-cookies">
+<meta property="og:updated_time" content="2016-08-29T08:56:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="构建Android持续集成环境">
+<meta name="twitter:description" content="本文的主要内容是如何用脚本在服务器上创建一个基于gradle的Android构建环境。
+目标操作系统
+Ubuntu 14.04ps: 基本上Linux都适用，不过只在Ubuntu和CentOS上测试过。
+
+依赖的软件
+Java
+Android SDK
+
+安装Oracle JDK这里我安装的JDK8，我使用的安装方法是相对来说比较绿色的
+下载Oracle JDK8wget --no-cookies">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://imchao.wang/2015/08/16/android-ci-environment/"/>
+
+  <title> 构建Android持续集成环境 | 王超的技术博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-46801609-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?d589ef06c2d30f9bee9db8326816e3d0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">王超的技术博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">享受技术和编程带来的快乐</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                构建Android持续集成环境
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-08-16T08:36:32+08:00" content="2015-08-16">
+              2015-08-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/android-CI-持续集成/" itemprop="url" rel="index">
+                    <span itemprop="name">android, CI, 持续集成</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文的主要内容是如何用脚本在服务器上创建一个基于gradle的Android构建环境。</p>
+<h1 id="目标操作系统"><a href="#目标操作系统" class="headerlink" title="目标操作系统"></a>目标操作系统</h1><ul>
+<li>Ubuntu 14.04<br>ps: 基本上Linux都适用，不过只在Ubuntu和CentOS上测试过。</li>
+</ul>
+<h1 id="依赖的软件"><a href="#依赖的软件" class="headerlink" title="依赖的软件"></a>依赖的软件</h1><ul>
+<li>Java</li>
+<li>Android SDK</li>
+</ul>
+<h2 id="安装Oracle-JDK"><a href="#安装Oracle-JDK" class="headerlink" title="安装Oracle JDK"></a>安装Oracle JDK</h2><p>这里我安装的JDK8，我使用的安装方法是相对来说比较绿色的</p>
+<h3 id="下载Oracle-JDK8"><a href="#下载Oracle-JDK8" class="headerlink" title="下载Oracle JDK8"></a>下载Oracle JDK8</h3><pre><code>wget --no-cookies --no-check-certificate --header &apos;Cookie: oraclelicense=accept-securebackup-cookie&apos;  -O &apos;jdk-8-linux-x64.tgz&apos; &apos;http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jdk-8u45-linux-x64.tar.gz&apos;
+</code></pre><h3 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h3><pre><code>tar zxf /var/tmp/jdk-8-linux-x64.tgz -C /var/tmp
+</code></pre><p>注意：这个包解压出来的根目录叫做 <strong>jdk1.8.0_45</strong><br>注意：鉴于我的使用场景，每一次构建我都需要重建我的环境，因此我在这里把JDK解压到/var/tmp，你可以替换成其他文件夹，下同。</p>
+<h3 id="如何使用JDK"><a href="#如何使用JDK" class="headerlink" title="如何使用JDK"></a>如何使用JDK</h3><p>尚且把这种安装方式叫做绿色安装好了，只需要每次使用Java之前设置JAVA_HOME就可以使用了。<br>在上一步中，解压好的JDK的全路径是 <strong>/var/tmp/jdk1.8.0_45</strong>，因此可以这样设置<strong>JAVA_HOME</strong>和<strong>Java</strong>相关的bin</p>
+<pre><code>export JAVA_HOME=/var/tmp/jdk1.8.0_45
+export PATH=${JAVA_HOME}/bin:${PATH}
+</code></pre><p>如果想要一劳永逸的话，需要把上面两个export加到~/.bashrc中或者创建一个profile，如下：</p>
+<pre><code>sudo tee -a /etc/profile.d/jdk1.8.sh &lt;&lt; &quot;EOF&quot;
+export JAVA_HOME=/var/tmp/jdk1.8.0_45
+export PATH=${JAVA_HOME}/bin:${PATH}
+EOF
+</code></pre><h2 id="安装Android-SDK"><a href="#安装Android-SDK" class="headerlink" title="安装Android SDK"></a>安装Android SDK</h2><h3 id="下载及解压"><a href="#下载及解压" class="headerlink" title="下载及解压"></a>下载及解压</h3><pre><code>wget -O /var/tmp/android-sdk.tgz http://dl.google.com/android/android-sdk_r24.2-linux.tgz
+tar zxvf /var/tmp/android-sdk.tgz -C /var/tmp/
+export ANDROID_HOME=/var/tmp/android-sdk-linux
+</code></pre><p>Android SDK也被解压到了/var/tmp，你可以换成其他的目录，但是要注意权限问题。</p>
+<h3 id="安装需要的SDK和相关工具"><a href="#安装需要的SDK和相关工具" class="headerlink" title="安装需要的SDK和相关工具"></a>安装需要的SDK和相关工具</h3><pre><code>echo y | ${ANDROID_HOME}/tools/android update sdk -s -u -a -t 7,24,139,140
+</code></pre><p>前面的<code>echo y</code>是为了在在安装过程中同意Android License。<br>后面的数字，代表的是各个软件，如：</p>
+<ul>
+<li>7: Android SDK Build-tools, revision 21.1.2</li>
+<li>24: SDK Platform Android 5.1.1, API 22, revision 2</li>
+<li>139: Android Support Repository, revision 15</li>
+<li>140: Android Support Library, revision 22.2</li>
+</ul>
+<p>这些代号需要使用下面的命令查看：</p>
+<pre><code>${ANDROID_HOME}/tools/android list sdk --all
+</code></pre><h2 id="64位操作系统"><a href="#64位操作系统" class="headerlink" title="64位操作系统"></a>64位操作系统</h2><p>如果是64位的操作系统，还需要执行下面的命令。</p>
+<pre><code>dpkg --add-architecture i386
+apt-get -qqy update
+apt-get -qqy install libncurses5:i386 libstdc++6:i386 zlib1g:i386
+</code></pre><p>到这里基本就可以进行构建了。</p>
+<h2 id="栗子：在daocloud-io上构建Android应用"><a href="#栗子：在daocloud-io上构建Android应用" class="headerlink" title="栗子：在daocloud.io上构建Android应用"></a>栗子：在daocloud.io上构建Android应用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">image: ubuntu:14.04</div><div class="line"></div><div class="line">env:</div><div class="line">    - DEPENDENCY_DIR=/var/tmp</div><div class="line">    - JAVA_HOME=$&#123;DEPENDENCY_DIR&#125;/jdk1.8.0_45</div><div class="line">    - ANDROID_HOME=$&#123;DEPENDENCY_DIR&#125;/android-sdk-linux</div><div class="line">    - PATH=$&#123;JAVA_HOME&#125;/bin:$&#123;PATH&#125;</div><div class="line"></div><div class="line">install:</div><div class="line">    - dpkg --add-architecture i386</div><div class="line">    - apt-get -qqy update</div><div class="line">    - &quot;apt-get install -y git wget libncurses5:i386 libstdc++6:i386 zlib1g:i386&quot;</div><div class="line">    - &quot;wget --no-cookies --no-check-certificate --header &apos;Cookie: oraclelicense=accept-securebackup-cookie&apos; -O $&#123;DEPENDENCY_DIR&#125;/jdk-8-linux-x64.tgz &apos;http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jdk-8u45-linux-x64.tar.gz&apos;&quot;</div><div class="line">    - tar zxf $&#123;DEPENDENCY_DIR&#125;/jdk-8-linux-x64.tgz -C $&#123;DEPENDENCY_DIR&#125;</div><div class="line">    - wget -O $&#123;DEPENDENCY_DIR&#125;/android-sdk.tgz http://dl.google.com/android/android-sdk_r24.2-linux.tgz</div><div class="line">    - tar zxvf $&#123;DEPENDENCY_DIR&#125;/android-sdk.tgz -C $&#123;DEPENDENCY_DIR&#125;</div><div class="line">    - echo y | $&#123;ANDROID_HOME&#125;/tools/android update sdk -s -u -a -t 7,24,139,140</div><div class="line"></div><div class="line">script:</div><div class="line">    - ./gradlew assemble</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/02/21/make-your-service-autostart-on-linux/" rel="next" title="在CentOS下配置自启动服务">
+                <i class="fa fa-chevron-left"></i> 在CentOS下配置自启动服务
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/25/integrate-alipy-with-cordova-app/" rel="prev" title="Cordova集成支付宝支付">
+                Cordova集成支付宝支付 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="王超" />
+          <p class="site-author-name" itemprop="name">王超</p>
+          <p class="site-description motion-element" itemprop="description">享受技术和编程带来的快乐</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/charleyw" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#目标操作系统"><span class="nav-number">1.</span> <span class="nav-text">目标操作系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖的软件"><span class="nav-number">2.</span> <span class="nav-text">依赖的软件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Oracle-JDK"><span class="nav-number">2.1.</span> <span class="nav-text">安装Oracle JDK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载Oracle-JDK8"><span class="nav-number">2.1.1.</span> <span class="nav-text">下载Oracle JDK8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装JDK"><span class="nav-number">2.1.2.</span> <span class="nav-text">安装JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用JDK"><span class="nav-number">2.1.3.</span> <span class="nav-text">如何使用JDK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Android-SDK"><span class="nav-number">2.2.</span> <span class="nav-text">安装Android SDK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载及解压"><span class="nav-number">2.2.1.</span> <span class="nav-text">下载及解压</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装需要的SDK和相关工具"><span class="nav-number">2.2.2.</span> <span class="nav-text">安装需要的SDK和相关工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#64位操作系统"><span class="nav-number">2.3.</span> <span class="nav-text">64位操作系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#栗子：在daocloud-io上构建Android应用"><span class="nav-number">2.4.</span> <span class="nav-text">栗子：在daocloud.io上构建Android应用</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">王超</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
