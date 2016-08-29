@@ -96,7 +96,7 @@
 中间需要经历实名认证，对公帐号认证等等认证，全部成功之后会收到短信通知告诉你预约成功。
 上传RSA公钥
 按照这个网页的说明生成RSA公钥注意：在pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt这一步会将生成的PKCS8格式的私钥打印到屏">
-<meta property="og:updated_time" content="2016-08-29T08:56:22.000Z">
+<meta property="og:updated_time" content="2016-08-29T09:20:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cordova集成支付宝支付">
 <meta name="twitter:description" content="申请帐号首先你需要从这个网站支付宝商家页面申请帐号，然后申请无线支付。
@@ -310,7 +310,7 @@
 <li>按照这个<a href="http://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.WSkmo8&amp;treeId=58&amp;articleId=103242&amp;docType=1" target="_blank" rel="external">网页</a>的说明生成RSA公钥<br><strong>注意</strong>：在<code>pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt</code>这一步会将生成的PKCS8格式的私钥打印到屏幕，需要手动保存。之后需要使用。</li>
 <li>然后把生成好的RSA公钥上传到这个支付宝上，参照这个<a href="http://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.KOQ7dv&amp;treeId=58&amp;articleId=103578&amp;docType=1" target="_blank" rel="external">网页</a></li>
 </ul>
-<p><strong>注意上传的时候记住删掉公钥文件前后的—–BEGIN PUBLIC KEY—–和—–END PUBLIC KEY—–，以及空格和换行，否则会告诉你公钥非法</strong></p>
+<p><strong>注意上传的时候记住删掉公钥文件前后的—–BEGIN PUBLIC KEY—–和—–END PUBLIC KEY—–，以及空格和换行，否则会告诉你公钥非法</strong><br><a id="more"></a></p>
 <h3 id="准备好集成资料"><a href="#准备好集成资料" class="headerlink" title="准备好集成资料"></a>准备好集成资料</h3><ul>
 <li>支付宝帐号</li>
 <li>合作者身份ID(PID): <a href="http://doc.open.alipay.com/doc2/detail?treeId=58&amp;articleId=103544&amp;docType=1" target="_blank" rel="external">查看方法</a></li>

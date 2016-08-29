@@ -87,8 +87,7 @@
 <meta name="description" content="一、首先是ShowcaseSee the Pen react-tabs by Wang Chao (@charleyw) on CodePen.
 
 
-二、如何实现既然用React写，那么它就必然是一个组件，首先考虑你怎么使用这个组件，也就是这个组件的接口是怎么样的。
-1234567891011&amp;lt;TabsControl&amp;gt;  &amp;lt;Tab name=&amp;quot;red&amp;quot;&amp;gt;">
+二、如何实现">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用React实现点击切换的标签页">
 <meta property="og:url" content="http://imchao.wang/2015/12/25/use-react-implement-tabs-page/index.html">
@@ -96,16 +95,14 @@
 <meta property="og:description" content="一、首先是ShowcaseSee the Pen react-tabs by Wang Chao (@charleyw) on CodePen.
 
 
-二、如何实现既然用React写，那么它就必然是一个组件，首先考虑你怎么使用这个组件，也就是这个组件的接口是怎么样的。
-1234567891011&amp;lt;TabsControl&amp;gt;  &amp;lt;Tab name=&amp;quot;red&amp;quot;&amp;gt;">
-<meta property="og:updated_time" content="2016-08-29T08:56:22.000Z">
+二、如何实现">
+<meta property="og:updated_time" content="2016-08-29T09:20:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用React实现点击切换的标签页">
 <meta name="twitter:description" content="一、首先是ShowcaseSee the Pen react-tabs by Wang Chao (@charleyw) on CodePen.
 
 
-二、如何实现既然用React写，那么它就必然是一个组件，首先考虑你怎么使用这个组件，也就是这个组件的接口是怎么样的。
-1234567891011&amp;lt;TabsControl&amp;gt;  &amp;lt;Tab name=&amp;quot;red&amp;quot;&amp;gt;">
+二、如何实现">
 
 
 
@@ -310,7 +307,8 @@
         <h3 id="一、首先是Showcase"><a href="#一、首先是Showcase" class="headerlink" title="一、首先是Showcase"></a>一、首先是Showcase</h3><p></p><p data-height="268" data-theme-id="0" data-slug-hash="KVgNeK" data-default-tab="result" data-user="charleyw" class="codepen">See the Pen <a href="http://codepen.io/charleyw/pen/KVgNeK/" target="_blank" rel="external">react-tabs</a> by Wang Chao (<a href="http://codepen.io/charleyw" target="_blank" rel="external">@charleyw</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p><p></p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
-<h3 id="二、如何实现"><a href="#二、如何实现" class="headerlink" title="二、如何实现"></a>二、如何实现</h3><p>既然用React写，那么它就必然是一个组件，首先考虑你怎么使用这个组件，也就是这个组件的接口是怎么样的。</p>
+<h3 id="二、如何实现"><a href="#二、如何实现" class="headerlink" title="二、如何实现"></a>二、如何实现</h3><a id="more"></a>
+<p>既然用React写，那么它就必然是一个组件，首先考虑你怎么使用这个组件，也就是这个组件的接口是怎么样的。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;TabsControl&gt;</div><div class="line">  &lt;Tab name=&quot;red&quot;&gt;</div><div class="line">    &lt;div className=&quot;red&quot;/&gt;</div><div class="line">  &lt;/Tab&gt;</div><div class="line">  &lt;Tab name=&quot;blue&quot;&gt;</div><div class="line">    &lt;div className=&quot;blue&quot;/&gt;</div><div class="line">  &lt;/Tab&gt;</div><div class="line">  &lt;Tab name=&quot;yellow&quot;&gt;</div><div class="line">    &lt;div className=&quot;yellow&quot;/&gt;</div><div class="line">  &lt;/Tab&gt;</div><div class="line">&lt;/TabsControl&gt;</div></pre></td></tr></table></figure>
 <p>这个<code>TabsControl</code>作为父组件，它来控制<code>Tab</code>的如何切换，<code>Tab</code>是用来包裹真正要显示的内容的，它的<code>name</code>属性是这个标签页的名字，会被显示在标签页的标题栏上。</p>
 <h3 id="三、创建基本元素"><a href="#三、创建基本元素" class="headerlink" title="三、创建基本元素"></a>三、创建基本元素</h3><p>按照之前的想法，我们用<code>Tab</code>定义了很多个标签页，我们需要根据这些定义生成标签页的标题栏和内容。</p>

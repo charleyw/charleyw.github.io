@@ -94,7 +94,7 @@
 <meta property="og:description" content="这里主要想介绍一下用chkconfig配置自启动服务，包括如何控制服务启动顺序以及启动依赖。虽然本文中提到的脚本的测试环境都是在CentOS上，但是因为使用的配置文件是LSB-style的，所以在其他Linux上也基本能用，只是使用的工具不一样，如在debian上使用update-rc.d。首先从如何简单的添加一个自启动服务说起。
 如何添加一个自启动服务
 首先，你需要一个服务配置脚本，在/etc/">
-<meta property="og:updated_time" content="2016-08-29T08:56:22.000Z">
+<meta property="og:updated_time" content="2016-08-29T09:20:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在CentOS下配置自启动服务">
 <meta name="twitter:description" content="这里主要想介绍一下用chkconfig配置自启动服务，包括如何控制服务启动顺序以及启动依赖。虽然本文中提到的脚本的测试环境都是在CentOS上，但是因为使用的配置文件是LSB-style的，所以在其他Linux上也基本能用，只是使用的工具不一样，如在debian上使用update-rc.d。首先从如何简单的添加一个自启动服务说起。
@@ -307,6 +307,7 @@
 <pre><code>touch /etc/init.d/test-init
 chmod +x /etc/init.d/test-init
 </code></pre><p> 给这个文件写入如下内容</p>
+<a id="more"></a>
 <pre><code>#!/bin/sh
 
 # chkconfig: 2345 20 80
